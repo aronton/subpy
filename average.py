@@ -15,28 +15,32 @@ print("key in parameter in the following format : \n\
 ex : Spin, L1, L2, delta_L, J1, J2, delta_J, D1, D2, delta_D, Pdis, bondDim, initialSampleNumber, finalSampleNumber, sampleDelta, check_Or_Not\n\
 ex : 15(Spin) 64(L) 1.1(J) 0.1(D) 10(Pdis) 40(bondDim) 1(initialSampleNumber) 20(finalSampleNumber) 5(sampleDelta), Y(check_Or_Not)\n")
 
-parameterlist["Spin"]=input("Spin : ")
+try:
+    parameterlist["Spin"]=input("Spin : ")
 
-parameterlist["L"]["L1"]=input("L1 : ")
-parameterlist["L"]["L2"]=input("L2 : ")
-parameterlist["L"]["dL"]=input("dL : ")
+    parameterlist["L"]["L1"]=input("L1 : ")
+    parameterlist["L"]["L2"]=input("L2 : ")
+    parameterlist["L"]["dL"]=input("dL : ")    
 
-parameterlist["J"]["J1"]=input("J1 : ")
-parameterlist["J"]["J2"]=input("J2 : ")
-parameterlist["J"]["dJ"]=input("dJ : ")
+    parameterlist["J"]["J1"]=input("J1 : ")
+    parameterlist["J"]["J2"]=input("J2 : ")
+    parameterlist["J"]["dJ"]=input("dJ : ")
 
-parameterlist["D"]["D1"]=input("D1 : ")
-parameterlist["D"]["D2"]=input("D2 : ")
-parameterlist["D"]["dD"]=input("dD : ")
+    parameterlist["D"]["D1"]=input("D1 : ")
+    parameterlist["D"]["D2"]=input("D2 : ")
+    parameterlist["D"]["dD"]=input("dD : ")
 
-parameterlist["seed"]["s1"]=int(input("initialSampleNumber : "))
-parameterlist["seed"]["s2"]=int(input("finalSampleNumber : "))
-parameterlist["seed"]["ds"]=int(input("sampleDelta : "))
-parameterlist["BC"] = input("BC : ")
-parameterlist["Pdis"] = int(input("Pdis : "))
-parameterlist["bondDim"] = int(input("bondDim : "))
-parameterlist["dx"] = int(input("dx : "))
-parameterlist["check_Or_Not"]=input("check_Or_Not(Y/N) : ")
+    parameterlist["seed"]["s1"]=int(input("initialSampleNumber : "))
+    parameterlist["seed"]["s2"]=int(input("finalSampleNumber : "))
+    parameterlist["seed"]["ds"]=int(input("sampleDelta : "))
+    parameterlist["BC"] = input("BC : ")
+    parameterlist["Pdis"] = int(input("Pdis : "))
+    parameterlist["bondDim"] = int(input("bondDim : "))
+    parameterlist["dx"] = int(input("dx : "))
+    parameterlist["check_Or_Not"]=input("check_Or_Not(Y/N) : ")
+except KeyboardInterrupt:
+    print("shut down")
+    exit()
 
 
 
@@ -214,224 +218,184 @@ def submut(parameterlist, Ncore, partition, tSDRG_path):
 
                     submit_cmd = " ".join(submit_cmd_list)
                     os.system(submit_cmd)
-    return 0
 
 def show(parameterlist, Ncore, partition):
-
+    
+    print("show")
+    
     p = parameterlist
-
-    L=scriptCreator.paraList("L",parameterlist["L"])
-    L_num = L.num_list
-    L_p_num = L.p_num_list
-    L_str = L.str_list
-    L_p_str = L.p_str_list
-    L_s100 = L.s100_list
-    L_p_s100 = L.p_s100_list
-    print("L_num:",L_num)
-    print("L_p_num:",L_p_num)
-    print("L_str:",L_str)
-    print("L_p_str:",L_p_str)
-    print("L_s100:",L_s100)
-    print("L_p_s100:",L_p_s100)
-
-
-    S=scriptCreator.Spara("Seed",parameterlist["seed"])
-    S_num = S.toS()
-    S_str = S.toStr()
-    s1 = parameterlist["seed"]["s1"]
-    s2 = parameterlist["seed"]["s2"]
-
-    J=scriptCreator.paraList("Jdis",parameterlist["J"])
-    J_num = J.num_list
-    J_p_num = J.p_num_list
-    J_str = J.str_list
-    J_p_str = J.p_str_list
-    J_s100 = J.s100_list
-    J_p_s100 = J.p_s100_list
-    
-    print("J_num",J_num)
-    print("J_p_num",J_p_num)
-    print("J_str:",J_str)
-    print("J_p_str:",J_p_str)
-    print("J_s100:",J_s100)
-    print("J_p_s100:",J_p_s100)
-    
-    D=scriptCreator.paraList("Dim",parameterlist["D"])
-    D_num = D.num_list
-    D_p_num = D.p_num_list
-    D_str = D.str_list
-    D_p_str = D.p_str_list
-    D_s100 = D.s100_list
-    D_p_s100 = D.p_s100_list
-    
-    print("D_num:",D_num)
-    print("D_p_num:",D_p_num)
-    print("D_str:",D_str)
-    print("D_p_str:",D_p_str)
-    print("D_s100:",D_s100)
-    print("D_p_s100:",D_p_s100)
-
-    Spin=parameterlist["Spin"]
-    Pdis=parameterlist["Pdis"]
-    dx=parameterlist["dx"]
-    bondDim=parameterlist["bondDim"]
-    BC=parameterlist["BC"]
-    check_Or_Not=parameterlist["check_Or_Not"]
-
     
     job_list = os.popen("squeue -u aronton " + "-p scopion" + str(partition) + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
+
     a = list(job_list)
+
     del a[0]
+    # print(a)
     for i in range(len(a)):
-        a[i] = a[i].split()
+        a[i] = a[i].split()    
+    for i in range(len(a)):
+        print(a[i])
+    # print(a)
+
+    if (p["L"]["L1"] != "") and (p["L"]["L2"] != "") and (p["L"]["dL"] != ""): 
+        L=scriptCreator.paraList("L",p["L"])
+        L_num = L.num_list
+        L_p_num = L.p_num_list
+        L_str = L.str_list
+        L_p_str = L.p_str_list
+        L_s100 = L.s100_list
+        L_p_s100 = L.p_s100_list
+        print(L_str)
+        b = []
+        for i in L_str:
+            b = b + list(filter(lambda n: i in n[2],a))
+            
+    if (p["J"]["J1"] != "") and (p["J"]["J2"] != "") and (p["J"]["dJ"] != ""): 
+        J=scriptCreator.paraList("Jdis",p["J"])
+        J_num = J.num_list
+        J_p_num = J.p_num_list
+        J_str = J.str_list
+        J_p_str = J.p_str_list
+        J_s100 = J.s100_list
+        J_p_s100 = J.p_s100_list
+
+        print(J_str)
+        c = []
+        for i in J_str:
+            c = c + list(filter(lambda n: i in n[2],b))
+
+
+    if (p["D"]["D1"] != "") and (p["D"]["D2"] != "") and (p["D"]["dD"] != ""): 
+        D=scriptCreator.paraList("Dim",p["D"])
+        D_num = D.num_list
+        D_p_num = D.p_num_list
+        D_str = D.str_list
+        D_p_str = D.p_str_list
+        D_s100 = D.s100_list
+        D_p_s100 = D.p_s100_list
         
-    print(J_str)
-    b = []
-    for i in J_str:
-        b = b + list(filter(lambda n: i in n[2],a))
-    # print(list(b))
-    print(D_str)
-    c = []
-    for i in D_str:
-        c = c + list(filter(lambda n: i in n[2],b))
-    # print(list(c))
-    print(Pdis)
-    d = []
-    d = d + list(filter(lambda n: str(Pdis) in n[2],c))
-    # print(list(d))
-
-    e = []
-    for i in L_str:
-        e = e + list(filter(lambda n: i in n[2],d))
+        print(D_str)
+        d = []
+        for i in D_str:
+            d = d + list(filter(lambda n: i in n[2],c))
+            
+    s1 = p["seed"]["s1"]
+    s2 = p["seed"]["s2"]
+    Pdis=p["Pdis"]
+    dx=p["dx"]
+    bondDim=p["bondDim"]
+    BC=p["BC"]
+    check_Or_Not=p["check_Or_Not"]
     
-    e=list(e)
-    for i in e:
-        print(e[2])    
+    # print("ddd")
+    # for i in range(len(d)):
+    #     print(d[i])    
+        
+    if (p["Spin"] != ""): 
+        Spin=p["Spin"]
+        e = list(filter(lambda n: Spin in n[2],d))
+    if (p["Pdis"] != ""): 
+        Pdis=p["Pdis"]
+        f = list(filter(lambda n: Pdis in n[2],e))        
+    if (p["bondDim"] != ""): 
+        bondDim=p["bondDim"]
+        g = list(filter(lambda n: bondDim in n[2],f))   
+    if (p["BC"] != ""): 
+        BC=p["BC"]
+        h = list(filter(lambda n: BC in n[2],g))     
+    # print("hhh")
+    # for i in range(len(h)):
+    #     print(h[i])
+        
+
+# def cancel(parameterlist, Ncore, partition):
     
-    return 0
+#     p = parameterlist
 
-def cancel(parameterlist, Ncore, partition):
+#     L=scriptCreator.paraList("L",parameterlist["L"])
+#     L_num = L.num_list
+#     L_s100 = L.s100_list
+#     L_str = L.str_list
+#     L_p_num = L.p_num_list
+
+#     print("L_num:",L_num)
+#     print("L_p_num:",L_p_num)
+#     print("L_str:",L_str)
+#     print("L_p_str:",L_p_str)
+#     print("L_s100:",L_s100)
+#     print("L_p_s100:",L_p_s100)
+
+#     S=scriptCreator.Spara("Seed",parameterlist["seed"])
+#     S_num = S.toS()
+#     S_str = S.toStr()
+#     s1 = parameterlist["seed"]["s1"]
+#     s2 = parameterlist["seed"]["s2"]
+
+#     J=scriptCreator.paraList("Jdis",parameterlist["J"])
+#     J_num = J.num_list
+#     J_p_num = J.p_num_list
+#     J_str = J.str_list
+#     J_p_str = J.p_str_list
+#     J_s100 = J.s100_list
+#     J_p_s100 = J.p_s100_list
+
+#     D=scriptCreator.paraList("Dim",parameterlist["D"])
+#     D_num = D.num_list
+#     D_p_num = D.p_num_list
+#     D_str = D.str_list
+#     D_p_str = D.p_str_list
+#     D_s100 = D.s100_list
+#     D_p_s100 = D.p_s100_list
+
+#     Spin=parameterlist["Spin"]
+#     Pdis=parameterlist["Pdis"]
+#     dx=parameterlist["dx"]
+#     bondDim=parameterlist["bondDim"]
+#     BC=parameterlist["BC"]
     
-    p = parameterlist
+#     job_list = os.popen("squeue -u aronton " + "-p scopion" + str(partition) + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
+#     a = list(job_list)
+#     del a[0]
+#     for i in range(len(a)):
+#         a[i] = a[i].split()
+#     print(a)
+#     print(J_str)
+#     b = []
+#     for i in J_str:
+#         b = b + list(filter(lambda n: i in n[2],a))
+#     # print(list(b))
+#     print(D_str)
+#     c = []
+#     for i in D_str:
+#         c = c + list(filter(lambda n: i in n[2],b))
+#     # print(list(c))
+#     print(Pdis)
+#     d = []
+#     d = d + list(filter(lambda n: str(Pdis) in n[2],c))
+#     # print(list(d))
 
-    L=scriptCreator.paraList("L",parameterlist["L"])
-    L_num = L.num_list
-    L_s100 = L.s100_list
-    L_str = L.str_list
-    L_p_num = L.p_num_list
+#     e = []
+#     for i in L_str:
+#         e = e + list(filter(lambda n: i in n[2],d))    
+#     e=list(e)
+       
+#     return 0
 
-    print("L_num:",L_num)
-    print("L_p_num:",L_p_num)
-    print("L_str:",L_str)
-    print("L_p_str:",L_p_str)
-    print("L_s100:",L_s100)
-    print("L_p_s100:",L_p_s100)
-
-    S=scriptCreator.Spara("Seed",parameterlist["seed"])
-    S_num = S.toS()
-    S_str = S.toStr()
-    s1 = parameterlist["seed"]["s1"]
-    s2 = parameterlist["seed"]["s2"]
-
-    J=scriptCreator.paraList("Jdis",parameterlist["J"])
-    J_num = J.num_list
-    J_p_num = J.p_num_list
-    J_str = J.str_list
-    J_p_str = J.p_str_list
-    J_s100 = J.s100_list
-    J_p_s100 = J.p_s100_list
-
-    D=scriptCreator.paraList("Dim",parameterlist["D"])
-    D_num = D.num_list
-    D_p_num = D.p_num_list
-    D_str = D.str_list
-    D_p_str = D.p_str_list
-    D_s100 = D.s100_list
-    D_p_s100 = D.p_s100_list
-
-    Spin=parameterlist["Spin"]
-    Pdis=parameterlist["Pdis"]
-    dx=parameterlist["dx"]
-    bondDim=parameterlist["bondDim"]
-    BC=parameterlist["BC"]
-    
-    job_list = os.popen("squeue -u aronton " + "-p scopion" + str(partition) + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
-    a = list(job_list)
-    del a[0]
-    for i in range(len(a)):
-        a[i] = a[i].split()
-    print(a)
-    print(J_str)
-    b = []
-    for i in J_str:
-        b = b + list(filter(lambda n: i in n[2],a))
-    # print(list(b))
-    print(D_str)
-    c = []
-    for i in D_str:
-        c = c + list(filter(lambda n: i in n[2],b))
-    # print(list(c))
-    print(Pdis)
-    d = []
-    d = d + list(filter(lambda n: str(Pdis) in n[2],c))
-    # print(list(d))
-
-    e = []
-    for i in L_str:
-        e = e + list(filter(lambda n: i in n[2],d))
-    
-    e=list(e)
-    for i in e:
-        print(i[2])
-    # b=filter(lambda s : s[1] == 'scopion' + str(partition),b)
-    # b=filter(lambda s : "Spin" + str(Spin) in s[2],b)
-    # b=filter(lambda s : "P" + str(P) in s[2],b)
-    # b=filter(lambda s : "BC=" + str(BC) in s[2],b)
-    # b=filter(lambda s : "B" + str(bonDim) in s[2],b)    
-    # b=p_del(b,"L",L_s100)
-    # b=p_del(b,"Jdis",J_s100)
-    # b=p_del(b,"Dim",D_s100)
-    # b=s_del(b,S_num)
-    # b = list(b)
-    # for i in e:
-    #     print("output : ",i)
-    # for i in range(len(b)):
-    #     b[i] = b[i].split()
-    #     tempt = b[i][2]
-    #     tempt = tempt.split("_")
-    #     tempt[0] = re.sub("Spin","",tempt[0])
-    #     tempt[1] = re.sub("L","",tempt[1])
-    #     tempt[2] = re.sub("Jdis","",tempt[2])
-    #     tempt[3] = re.sub("Dim","",tempt[3])
-    #     tempt[4] = re.sub("P","",tempt[4])
-    #     tempt[5] = re.sub("BC=","",tempt[5])
-    #     tempt[6] = re.sub("B","",tempt[6])
-    #     tempt[7] = re.sub("Ncore=","",tempt[7])
-    #     tempt[8] = re.sub("seed1=","",tempt[8])
-    #     tempt[9] = re.sub("seed2=","",tempt[9])
-    #     tempt[2] = tempt[2][:1] + "." + tempt[2][1:]
-    #     tempt[3] = tempt[3][:1] + "." + tempt[3][1:] 
-    #     b[i].append(tempt)
-    #     f = [ i[0] for i in b]
-    #     list(f)
-    #     f=" ".join(f)
-    #     print("f : ",f)
-    #     os.system("scancel " + f)
-    return 0
-
-def p_del(b, title, L_s100):
-    for l_i,l in enumerate(L_s100):
-        b=filter(lambda s : title + str(l) in s[2],b)
-    return b
-def s_del(b, S_num):
-    for s_i in range(len(S_num)):
-        seed = S_num[s_i]
-        b=filter(lambda s : "seed1=" + str(seed[0]) in s[2],b)
-        b=filter(lambda s : "seed2=" + str(seed[-1]) in s[2],b)
-    return b
+# def p_del(b, title, L_s100):
+#     for l_i,l in enumerate(L_s100):
+#         b=filter(lambda s : title + str(l) in s[2],b)
+#     return b
+# def s_del(b, S_num):
+#     for s_i in range(len(S_num)):
+#         seed = S_num[s_i]
+#         b=filter(lambda s : "seed1=" + str(seed[0]) in s[2],b)
+#         b=filter(lambda s : "seed2=" + str(seed[-1]) in s[2],b)
+#     return b
 if task == "a":
+    print(task)
     submut(parameterlist, Ncore, partition, tSDRG_path)
 elif task == "b":
+    print(task)
     show(parameterlist, Ncore, partition)
 else:
     pass
