@@ -3,12 +3,9 @@ import os
 import datetime
 import scriptCreator
 
-def submut(parameterlist, tSDRG_path):
+def submut(parameterlist, Ncore, partition, tSDRG_path):
 
     p = parameterlist
-    
-    Ncore = parameterlist["Ncore"]
-    partition = parameterlist["partition"]
 
     L=scriptCreator.paraList("L",parameterlist["L"])
     L_num = L.num_list
@@ -144,7 +141,7 @@ def submut(parameterlist, tSDRG_path):
                     submit_cmd = " ".join(submit_cmd_list)
                     os.system(submit_cmd)
 
-def find(parameterlist):
+def find(parameterlist, Ncore, partition):
     print("find")
     p = parameterlist
     # flag = input("Job_state R/P")
@@ -154,17 +151,12 @@ def find(parameterlist):
         Job_state = "PENDING"
     elif p["status"] == "" :
         Job_state = ""
+        
+    
+    job_list = os.popen("squeue -u aronton " + "-p scopion" + str(partition) + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
 
-    Ncore = p["Ncore"]
-    partition = p["partition"]      
-      
-    if partition != "":
-        job_list = os.popen("squeue -u aronton " + "-p scopion" + str(partition) + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
-    else:
-        job_list = os.popen("squeue -u aronton " + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
-    
     job_list = list(job_list)
-    
+
     del job_list[0]
     for i in range(len(job_list)):
         job_list[i] = job_list[i].split()    
@@ -183,6 +175,8 @@ def find(parameterlist):
         for l in L_str:
             for e in job_list:
                 if l in e[2]:
+                    print(l)
+                    print(e[2])
                     temp.append(e)
         job_list = temp
 
@@ -256,9 +250,9 @@ def find(parameterlist):
      
     return job_list
 
-def cancel(parameterlist):
+def cancel(parameterlist, Ncore, partition):
 
-    job_list = find(parameterlist)
+    job_list = find(parameterlist, Ncore, partition)
 
     print("Cancel : \n\n")
     print("------------------------------------------------- \n\n")
@@ -268,9 +262,10 @@ def cancel(parameterlist):
         print(cmd + " : " + job_list[i][2])    
         os.system(cmd)
     
-def show(parameterlist):
-        
-    job_list = find(parameterlist)
+def show(parameterlist, Ncore, partition):
+    
+    
+    job_list = find(parameterlist, Ncore, partition)
 
     print("show\n\n")
     print("------------------------------------------------------\n\n")
@@ -279,89 +274,47 @@ def show(parameterlist):
         print(job_list[i])
     
 
-task = sys.argv[1]
+
+task = input("What is the task? (a)submit, (b)resubmit, (c)cancel Jobs: : \n")
+print(task)
 
 parameterlist = {"Spin":None,"L":{"L1":None,"L2":None,"dL":None},"J":{"J1":None,"J2":None,"dJ":None},\
                  "D":{"D1":None,"D2":None,"dD":None},"seed":{"s1":None,"s2":None,"ds":None},\
-                 "BC":None,"Pdis":None,"bondDim":None,"dx":None,"check_Or_Not":None,"status":None,"Ncore":None,"partition":None}
-# Ncore = input("Ncore : \n")
-# partition = input("partition : \n")
+                 "BC":None,"Pdis":None,"bondDim":None,"dx":None,"check_Or_Not":None,"status":None}
+Ncore = input("Ncore : \n")
+partition = input("partition : \n")
 print("key in parameter in the following format : \n\
 ex : Spin, L1, L2, delta_L, J1, J2, delta_J, D1, D2, delta_D, Pdis, bondDim, initialSampleNumber, finalSampleNumber, sampleDelta, check_Or_Not\n\
 ex : 15(Spin) 64(L) 1.1(J) 0.1(D) 10(Pdis) 40(bondDim) 1(initialSampleNumber) 20(finalSampleNumber) 5(sampleDelta), Y(check_Or_Not)\n")
 
-# try:
-    # parameterlist["Spin"]=input("Spin : ")
+try:
+    parameterlist["Spin"]=input("Spin : ")
 
-    # parameterlist["L"]["L1"]=input("L1 : ")
-    # parameterlist["L"]["L2"]=input("L2 : ")
-    # parameterlist["L"]["dL"]=input("dL : ")    
+    parameterlist["L"]["L1"]=input("L1 : ")
+    parameterlist["L"]["L2"]=input("L2 : ")
+    parameterlist["L"]["dL"]=input("dL : ")    
 
-    # parameterlist["J"]["J1"]=input("J1 : ")
-    # parameterlist["J"]["J2"]=input("J2 : ")
-    # parameterlist["J"]["dJ"]=input("dJ : ")
+    parameterlist["J"]["J1"]=input("J1 : ")
+    parameterlist["J"]["J2"]=input("J2 : ")
+    parameterlist["J"]["dJ"]=input("dJ : ")
 
-    # parameterlist["D"]["D1"]=input("D1 : ")
-    # parameterlist["D"]["D2"]=input("D2 : ")
-    # parameterlist["D"]["dD"]=input("dD : ")
+    parameterlist["D"]["D1"]=input("D1 : ")
+    parameterlist["D"]["D2"]=input("D2 : ")
+    parameterlist["D"]["dD"]=input("dD : ")
 
-    # parameterlist["seed"]["s1"]=input("initialSampleNumber : ")
-    # parameterlist["seed"]["s2"]=input("finalSampleNumber : ")
-    # parameterlist["seed"]["ds"]=input("sampleDelta : ")
-    # parameterlist["BC"] = input("BC : ")
-    # parameterlist["Pdis"] = input("Pdis : ")
-    # parameterlist["bondDim"] = input("bondDim : ")
-    # parameterlist["dx"] = input("dx : ")
-    # parameterlist["check_Or_Not"]=input("check_Or_Not(Y/N) : ")
-    # parameterlist["status"]=input("R/P) : ")
-i = 2
-for key1,value1 in parameterlist.items():
-    if type(value1) != dict:
-        try:
-            if sys.argv[i] == "skip":
-                parameterlist[key1] = ""
-            else:
-                parameterlist[key1]=sys.argv[i]
-        except IndexError:
-            parameterlist[key1]=""
-        i = i + 1
-    else:
-        for key2,value2 in value1.items():
-            try:
-                if sys.argv[i] == "skip":
-                    parameterlist[key1][key2] = ""
-                else:
-                    parameterlist[key1][key2]=sys.argv[i]
-            except IndexError:
-                parameterlist[key1][key2]=""
-            i = i + 1
-                
-# parameterlist["L"]["L1"]=sys.argv[3]
-# parameterlist["L"]["L2"]=sys.argv[4]
-# parameterlist["L"]["dL"]=sys.argv[5]
+    parameterlist["seed"]["s1"]=input("initialSampleNumber : ")
+    parameterlist["seed"]["s2"]=input("finalSampleNumber : ")
+    parameterlist["seed"]["ds"]=input("sampleDelta : ")
+    parameterlist["BC"] = input("BC : ")
+    parameterlist["Pdis"] = input("Pdis : ")
+    parameterlist["bondDim"] = input("bondDim : ")
+    parameterlist["dx"] = input("dx : ")
+    parameterlist["check_Or_Not"]=input("check_Or_Not(Y/N) : ")
+    parameterlist["status"]=input("R/P) : ")
 
-# parameterlist["J"]["J1"]=sys.argv[6]
-# parameterlist["J"]["J2"]=sys.argv[7]
-# parameterlist["J"]["dJ"]=sys.argv[8]
-
-# parameterlist["D"]["D1"]=sys.argv[9]
-# parameterlist["D"]["D2"]=sys.argv[10]
-# parameterlist["D"]["dD"]=sys.argv[11]
-
-# parameterlist["seed"]["s1"]=sys.argv[12]
-# parameterlist["seed"]["s2"]=sys.argv[13]
-# parameterlist["seed"]["ds"]=sys.argv[14]
-# parameterlist["BC"] = sys.argv[15]
-# parameterlist["Pdis"] = sys.argv[16]
-# parameterlist["bondDim"] = sys.argv[17]
-# parameterlist["dx"] = sys.argv[18]
-# parameterlist["check_Or_Not"]=sys.argv[19]
-# parameterlist["status"]=sys.argv[20]
-# parameterlist["Ncore"]=sys.argv[21]
-# parameterlist["partition"]=sys.argv[22]
-# except KeyboardInterrupt:
-#     print("shut down")
-#     exit()
+except KeyboardInterrupt:
+    print("shut down")
+    exit()
 
 
 print(parameterlist,"\n")
@@ -371,10 +324,9 @@ for s in parameterlist:
 tSDRG_path="/home/aronton/tSDRG_random"
 
 
-if task == "submut" or task == "a":
-    print("task")
-    submut(parameterlist, tSDRG_path)
-elif task == "show" or task == "b":
-    show(parameterlist)
-elif task == "cancel" or task == "c":
-    cancel(parameterlist)
+if task == "a":
+    submut(parameterlist, Ncore, partition, tSDRG_path)
+elif task == "b":
+    show(parameterlist, Ncore, partition)
+elif task == "c":
+    cancel(parameterlist, Ncore, partition)
