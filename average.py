@@ -284,36 +284,10 @@ task = sys.argv[1]
 parameterlist = {"Spin":None,"L":{"L1":None,"L2":None,"dL":None},"J":{"J1":None,"J2":None,"dJ":None},\
                  "D":{"D1":None,"D2":None,"dD":None},"seed":{"s1":None,"s2":None,"ds":None},\
                  "BC":None,"Pdis":None,"bondDim":None,"dx":None,"check_Or_Not":None,"status":None,"Ncore":None,"partition":None}
-# Ncore = input("Ncore : \n")
-# partition = input("partition : \n")
 print("key in parameter in the following format : \n\
 ex : Spin, L1, L2, delta_L, J1, J2, delta_J, D1, D2, delta_D, Pdis, bondDim, initialSampleNumber, finalSampleNumber, sampleDelta, check_Or_Not\n\
 ex : 15(Spin) 64(L) 1.1(J) 0.1(D) 10(Pdis) 40(bondDim) 1(initialSampleNumber) 20(finalSampleNumber) 5(sampleDelta), Y(check_Or_Not)\n")
 
-# try:
-    # parameterlist["Spin"]=input("Spin : ")
-
-    # parameterlist["L"]["L1"]=input("L1 : ")
-    # parameterlist["L"]["L2"]=input("L2 : ")
-    # parameterlist["L"]["dL"]=input("dL : ")    
-
-    # parameterlist["J"]["J1"]=input("J1 : ")
-    # parameterlist["J"]["J2"]=input("J2 : ")
-    # parameterlist["J"]["dJ"]=input("dJ : ")
-
-    # parameterlist["D"]["D1"]=input("D1 : ")
-    # parameterlist["D"]["D2"]=input("D2 : ")
-    # parameterlist["D"]["dD"]=input("dD : ")
-
-    # parameterlist["seed"]["s1"]=input("initialSampleNumber : ")
-    # parameterlist["seed"]["s2"]=input("finalSampleNumber : ")
-    # parameterlist["seed"]["ds"]=input("sampleDelta : ")
-    # parameterlist["BC"] = input("BC : ")
-    # parameterlist["Pdis"] = input("Pdis : ")
-    # parameterlist["bondDim"] = input("bondDim : ")
-    # parameterlist["dx"] = input("dx : ")
-    # parameterlist["check_Or_Not"]=input("check_Or_Not(Y/N) : ")
-    # parameterlist["status"]=input("R/P) : ")
 i = 2
 for key1,value1 in parameterlist.items():
     if type(value1) != dict:
@@ -335,33 +309,6 @@ for key1,value1 in parameterlist.items():
             except IndexError:
                 parameterlist[key1][key2]=""
             i = i + 1
-                
-# parameterlist["L"]["L1"]=sys.argv[3]
-# parameterlist["L"]["L2"]=sys.argv[4]
-# parameterlist["L"]["dL"]=sys.argv[5]
-
-# parameterlist["J"]["J1"]=sys.argv[6]
-# parameterlist["J"]["J2"]=sys.argv[7]
-# parameterlist["J"]["dJ"]=sys.argv[8]
-
-# parameterlist["D"]["D1"]=sys.argv[9]
-# parameterlist["D"]["D2"]=sys.argv[10]
-# parameterlist["D"]["dD"]=sys.argv[11]
-
-# parameterlist["seed"]["s1"]=sys.argv[12]
-# parameterlist["seed"]["s2"]=sys.argv[13]
-# parameterlist["seed"]["ds"]=sys.argv[14]
-# parameterlist["BC"] = sys.argv[15]
-# parameterlist["Pdis"] = sys.argv[16]
-# parameterlist["bondDim"] = sys.argv[17]
-# parameterlist["dx"] = sys.argv[18]
-# parameterlist["check_Or_Not"]=sys.argv[19]
-# parameterlist["status"]=sys.argv[20]
-# parameterlist["Ncore"]=sys.argv[21]
-# parameterlist["partition"]=sys.argv[22]
-# except KeyboardInterrupt:
-#     print("shut down")
-#     exit()
 
 
 print(parameterlist,"\n")
