@@ -70,16 +70,32 @@ except KeyboardInterrupt:
 l = list(para.values())
 s = " ".join(l)
 
+# tonow = datetime.datetime.now()
+
+today = datetime.datetime.today()
+now = datetime.datetime.now()
+print(today.date())         # 2021-10-19
+print(now.time())         # 14:25:46.962975
+
+time = 
+
+for key,value in para.items():
+    print(key)
+    print(value)
+    print("\n\n")
 
 if task == "submit" or task == "a":
     command = "nohup python ./average.py " + task + " "
-    s = command + s
+    s = command + s 
+    s = s + ">>./parameterRecord/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day) + "/" + str(now.time()) + "/" + now.now()
+    print(s)
+    os.system(s)
     # l = [command,task,Spin,L1,L2,dL,J1,J2,dJ,D1,D2,dD,initialSampleNumber,finalSampleNumber,sampleDelta,BC,Pdis,bondDim,dx,check_Or_Not,status,Ncore,Partition,"&"]
 else:
     command = "python ./average.py " + task + " "
     s = command + s
+    print(s)
+    os.system(s)
 
 # l = [command,task,Spin,L1,L2,dL,J1,J2,dJ,D1,D2,dD,initialSampleNumber,finalSampleNumber,sampleDelta,BC,Pdis,bondDim,dx,check_Or_Not,status,Ncore,Partition,"&"]
 # s = " ".join(l)
-print(s)
-os.system(s)
