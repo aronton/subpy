@@ -3,6 +3,194 @@ import os
 import datetime
 import scriptCreator
 
+# tSDRG_path="/home/aronton/tSDRG_random/Sub_script/tSDRG_Sorting"
+tSDRG_path="/home/aronton/tSDRG_random"
+
+def ZL(orderPara, parameterlist, tSDRG_sorting):
+
+    Spin=parameterlist["Spin"]
+    Pdis=parameterlist["Pdis"]
+    dx=parameterlist["dx"]
+    bondDim=parameterlist["bondDim"]
+    BC=parameterlist["BC"]
+    check_Or_Not=parameterlist["check_Or_Not"]
+    
+    Ncore = parameterlist["Ncore"]
+    partition = parameterlist["partition"]
+    L=scriptCreator.paraList("L",parameterlist["L"])
+    J=scriptCreator.paraList("Jdis",parameterlist["J"])
+    D=scriptCreator.paraList("Dim",parameterlist["D"])
+    S=scriptCreator.Spara("Seed",parameterlist["seed"])
+    # ZL_script = tSDRG_path + "/Sub_script/tSDRG_Sorting/ZL/Zsub.sh"
+    # sub_script = tSDRG_path + "/Sorting_data" + "/" + "Spin" + Spin + "/" + "record/" + str(orderPara) + "/B" + str(bondDim) 
+
+
+    L_num = L.num_list
+    L_p_num = L.p_num_list
+    L_str = L.str_list
+    L_p_str = L.p_str_list
+    L_s100 = L.s100_list
+    L_p_s100 = L.p_s100_list
+    print("L_num:",L_num)
+    print("L_p_num:",L_p_num)
+    print("L_str:",L_str)
+    print("L_p_str:",L_p_str)
+    print("L_s100:",L_s100)
+    print("L_p_s100:",L_p_s100)
+
+
+    S=scriptCreator.Spara("Seed",parameterlist["seed"])
+    S_num = S.toS()
+    S_str = S.toStr()
+    s1 = parameterlist["seed"]["s1"]
+    s2 = parameterlist["seed"]["s2"]
+
+    J=scriptCreator.paraList("Jdis",parameterlist["J"])
+    J_num = J.num_list
+    J_p_num = J.p_num_list
+    J_str = J.str_list
+    J_p_str = J.p_str_list
+    J_s100 = J.s100_list
+    J_p_s100 = J.p_s100_list
+    
+    print("J_num",J_num)
+    print("J_p_num",J_p_num)
+    print("J_str:",J_str)
+    print("J_p_str:",J_p_str)
+    print("J_s100:",J_s100)
+    print("J_p_s100:",J_p_s100)
+    
+    D=scriptCreator.paraList("Dim",parameterlist["D"])
+    D_num = D.num_list
+    D_p_num = D.p_num_list
+    D_str = D.str_list
+    D_p_str = D.p_str_list
+    D_s100 = D.s100_list
+    D_p_s100 = D.p_s100_list
+    
+    print("D_num:",D_num)
+    print("D_p_num:",D_p_num)
+    print("D_str:",D_str)
+    print("D_p_str:",D_p_str)
+    print("D_s100:",D_s100)
+    print("D_p_s100:",D_p_s100)
+
+    os.system( "cd " + tSDRG_path + "/tSDRG/Main_" + Spin)
+    script_path_tot = "" 
+    for l_i,l in enumerate(L_str):
+        script = [tSDRG_path, "Sub_script", "tSDRG_Sorting", str(orderPara), "B" + str(bondDim) ]
+        parameter = [tSDRG_path, "Sorting_data", "Spin" + str(Spin), "record", str(orderPara), "B" + str(bondDim) ]
+        script_output = [tSDRG_path, "Sorting_data", "Spin" + str(Spin), "slurm", str(orderPara), "B" + str(bondDim) ]
+        for j_i,j in enumerate(J_str):
+            for d_i,d in enumerate(D_str):
+                s = S_num[s_i]
+                script_path = "/".join(script)
+                output_path = "/".join(script_output)
+                if os.path.exists(script_path):
+                    pass
+                    # print("exist : ", script_path)
+                else:
+                    # print("not exist : ", script_path)
+                    os.makedirs(script_path)
+                    
+                if os.path.exists(output_path):
+                    pass
+                    # print("exist : ", script_path)
+                else:
+                    # print("not exist : ", script_path)
+                    os.makedirs(output_path)
+                    
+                output_path = output_dir + "/" + l + "/" + j + "/" + d
+                script.append(j)
+                script.append(d)
+                script_output.append(j)
+                script_output.append(d)
+                name = [str(orderPara) ,"spin" + str(Spin), "L"+str(l), j, d, "seed=" + str(s1), "seed=" + str(s2)]
+                name = "_".join(name)
+                script.append(name)
+                script_path = "/".join(script)
+                 
+                if os.path.exists(script_path):
+                    pass
+                    # print("exist : ", script_path)
+                else:
+                    # print("not exist : ", script_path)
+                    os.makedirs(script_path)
+                    
+                if os.path.exists(output_path):
+                    pass
+                    # print("exist : ", output_path)
+                else:
+                    # print("not exist : ", output_path)
+                    os.makedirs(output_path)
+                    
+                jobName = "Spin" + str(Spin) + "_" + l + "_" + j + "_" + d + "_" + "P" + str(Pdis) \
+                            + "_" + "BC=" + str(BC) + "_B" + str(bondDim) + "_Ncore=" + Ncore + "_seed1=" \
+                                + str(s[0]) + "_seed2=" + str(s[-1])
+                script_name = jobName + "_" + now_date + "_" + now_time
+                script_path = script_path + "/" + script_name + "_random.sh"
+                output_path = output_path + "/" + script_name + "_random.out"
+                context = template.copy()
+                script_path_tot = script_path_tot + script_path + "\n"
+                with open(script_path, "w") as file:
+                    context[1] = context[1].replace("replace1", "scopion" + str(partition))
+                    context[3] = context[3].replace("replace2", jobName)
+                    context[4] = context[4].replace("replace3", Ncore)
+                    context[5] = context[5].replace("replace4", output_path)
+                    file.writelines(context)
+                
+                submit_cmd_list = ["nohup sbatch ",script_path, str(Spin),str(L_num[l_i]),str(J_num[j_i]),str(D_num[d_i])\
+                ,str(BC),str(bondDim),str(Pdis),str(s[0]),str(s[-1]),check_Or_Not,str(Ncore),tSDRG_path,output_path, ">/dev/null 2>& 1&"]
+
+                submit_cmd = " ".join(submit_cmd_list)
+                os.system(submit_cmd)
+    print(script_path_tot)
+
+
+
+    tSDRG_record = tSDRG_path + "/tSDRG" + "/Main_" + str(Spin) + "/submit_record"
+    record_dir = tSDRG_path + "/tSDRG" + "/Main_" + str(Spin) + "/jobRecord" 
+    script_dir = record_dir + "/script" + "/" + str(BC) + "/B" + str(bondDim)
+    output_dir = record_dir + "/slurmOutput" + "/" + str(BC) + "/B" + str(bondDim)
+
+    tSDRG_fileName="/tSDRG_Spin=" + str(Spin) + ";BC=" + str(BC) + ";P="+ str(Pdis) + ";B=" + str(bondDim) \
+        + ";L=" + str(L_p_num[0]) + "_" + str(L_p_num[1]) + "(" + str(L_p_num[2])\
+        + ");J=" + str(J_num[0]) + "_" + str(J_p_num[1]) +"(" + str(round(J_p_num[2],2)) \
+        + ");D=" + str(D_num[0]) + "_" + str(D_p_num[1]) + "(" + str(round(D_p_num[2],2)) +");"\
+        + "seed1=" + str(s1) + "_seed2=" + str(s2) + ";Partition=" + str(partition) + ";Number_of_core=" + str(Ncore)
+
+    nt=datetime.datetime.now()
+    now_year = str(nt.year)
+    now_date = str(nt.year) + "_" + str(nt.month) + "_" + str(nt.day)
+    now_time = "H" + str(nt.hour) + "_M" + str(nt.minute) + "_S" + str(nt.second)
+    
+    tSDRG_fileDir = tSDRG_record + "/" + now_year + "/" + now_date
+
+    if os.path.exists(tSDRG_fileDir):
+        print(tSDRG_fileDir)
+    else:
+        os.makedirs(tSDRG_fileDir)
+
+    tSDRG_filePath = tSDRG_fileDir + tSDRG_fileName + "_" + now_time
+
+    with open(tSDRG_filePath, "wt") as file:
+        file.write(tSDRG_fileName)
+
+    with open("run.sh", "r") as file:
+        template = file.readlines()
+
+    print("tSDRG_filePath : ",tSDRG_filePath)
+    
+    os.system( "cd " + tSDRG_path + "/tSDRG/Main_" + Spin)
+def SOP(parameterlist, tSDRG_sorting):
+    
+def bulk(parameterlist, tSDRG_sorting):
+    
+def etoe(parameterlist, tSDRG_sorting):
+    
+def gap(parameterlist, tSDRG_sorting):
+    
+
 def submut(parameterlist, Ncore, partition, tSDRG_path):
 
     p = parameterlist

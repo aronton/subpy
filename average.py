@@ -3,12 +3,14 @@ import os
 import datetime
 import scriptCreator
 
-def submut(parameterlist, tSDRG_path):
+
+
+def submit(parameterlist, tSDRG_path):
 
     p = parameterlist
     
     Ncore = parameterlist["Ncore"]
-    partition = parameterlist["partition"]
+    partition = parameterlist["partition1"]
 
     L=scriptCreator.paraList("L",parameterlist["L"])
     L_num = L.num_list
@@ -102,7 +104,7 @@ def submut(parameterlist, tSDRG_path):
     print("tSDRG_filePath : ",tSDRG_filePath)
     
     os.system( "cd " + tSDRG_path + "/tSDRG/Main_" + Spin)
-    
+    script_path_tot = "" 
     for l_i,l in enumerate(L_str):
         for j_i,j in enumerate(J_str):
             for d_i,d in enumerate(D_str):
@@ -126,11 +128,12 @@ def submut(parameterlist, tSDRG_path):
                         
                     jobName = "Spin" + str(Spin) + "_" + l + "_" + j + "_" + d + "_" + "P" + str(Pdis) \
                                 + "_" + "BC=" + str(BC) + "_B" + str(bondDim) + "_Ncore=" + Ncore + "_seed1=" \
-                                    + str(s[0]) + "_seed2=" + str(s[-1]) + ""
+                                    + str(s[0]) + "_seed2=" + str(s[-1])
                     script_name = jobName + "_" + now_date + "_" + now_time
                     script_path = script_path + "/" + script_name + "_random.sh"
                     output_path = output_path + "/" + script_name + "_random.out"
                     context = template.copy()
+                    script_path_tot = script_path_tot + script_path + "\n"
                     with open(script_path, "w") as file:
                         context[1] = context[1].replace("replace1", "scopion" + str(partition))
                         context[3] = context[3].replace("replace2", jobName)
@@ -143,6 +146,7 @@ def submut(parameterlist, tSDRG_path):
 
                     submit_cmd = " ".join(submit_cmd_list)
                     os.system(submit_cmd)
+    print(script_path_tot)
 
 def find(parameterlist):
     print("find")
@@ -156,12 +160,12 @@ def find(parameterlist):
         Job_state = ""
 
     Ncore = p["Ncore"]
-    partition = p["partition"]      
+    partition = p["partition1"]      
       
     if partition != "":
-        job_list = os.popen("squeue -u aronton " + "-p scopion" + str(partition) + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
+        job_list = os.popen("squeue " + "-p scopion" + str(partition) + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
     else:
-        job_list = os.popen("squeue -u aronton " + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
+        job_list = os.popen("squeue " + " -o \"%%.12i %%.12P %%.90j %%.8T\"")
     
     job_list = list(job_list)
     
@@ -277,13 +281,33 @@ def show(parameterlist):
 
     for i in range(len(job_list)):
         print(job_list[i])
-    
+
+def Distribution(parameterlist):
+        
+    job_list = find(parameterlist)
+
+    print("Distribution\n\n")
+    print("------------------------------------------------------\n\n")
+    print("tot:")
+    tot=len(job_list)
+    print(tot)
+    print("Running:")
+    job_list = list(filter(lambda n: "RUNNING" in n[3],job_list)) 
+    run=len(job_list)
+    print(run)
+    print("Pending:")  
+    print(tot-run)      
+
 
 task = sys.argv[1]
+nt=datetime.datetime.now()
+
+print("---------------------------"+str(nt.now())+"---------------------------")
+
 
 parameterlist = {"Spin":None,"L":{"L1":None,"L2":None,"dL":None},"J":{"J1":None,"J2":None,"dJ":None},\
                  "D":{"D1":None,"D2":None,"dD":None},"seed":{"s1":None,"s2":None,"ds":None},\
-                 "BC":None,"Pdis":None,"bondDim":None,"dx":None,"check_Or_Not":None,"status":None,"Ncore":None,"partition":None}
+                 "BC":None,"Pdis":None,"bondDim":None,"dx":None,"check_Or_Not":None,"status":None,"Ncore":None,"partition1":None,"partition2":None}
 print("key in parameter in the following format : \n\
 ex : Spin, L1, L2, delta_L, J1, J2, delta_J, D1, D2, delta_D, Pdis, bondDim, initialSampleNumber, finalSampleNumber, sampleDelta, check_Or_Not\n\
 ex : 15(Spin) 64(L) 1.1(J) 0.1(D) 10(Pdis) 40(bondDim) 1(initialSampleNumber) 20(finalSampleNumber) 5(sampleDelta), Y(check_Or_Not)\n")
@@ -318,10 +342,15 @@ for s in parameterlist:
 tSDRG_path="/home/aronton/tSDRG_random"
 
 
-if task == "submut" or task == "a":
-    print("task")
-    submut(parameterlist, tSDRG_path)
+if task == "submit" or task == "a":
+    submit(parameterlist, tSDRG_path)
 elif task == "show" or task == "b":
     show(parameterlist)
 elif task == "cancel" or task == "c":
     cancel(parameterlist)
+elif task == "change" or task == "d":
+    cancel(parameterlist)
+    parameterlist["partition1"] = parameterlist["partition2"]
+    submit(parameterlist, tSDRG_path)
+elif task == "dis" or task == "e":
+    Distribution(parameterlist)
