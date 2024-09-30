@@ -18,8 +18,8 @@ cd $tSDRG_path"/tSDRG/Main_"$Spin
 
 pwd
 
-echo "script_directory"
-echo "$(output_path)"
+# echo "script_directory"
+# echo "$output_path"
 
 L=${2}
 

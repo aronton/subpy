@@ -11,36 +11,60 @@ def submit(parameterlist, tSDRG_path):
     
     Ncore = parameterlist["Ncore"]
     partition = parameterlist["partition1"]
-
-    L=scriptCreator.paraList("L",parameterlist["L"])
-    L_num = L.num_list
-    L_p_num = L.p_num_list
-    L_str = L.str_list
-    L_p_str = L.p_str_list
-    L_s100 = L.s100_list
-    L_p_s100 = L.p_s100_list
+    para=scriptCreator.paraList1(parameterlist["L"],parameterlist["J"],parameterlist["D"],parameterlist["seed"])
+    # L=scriptCreator.paraList1("L",parameterlist["L"])
+    L_num = para.L_num
+    L_p_num = para.L_p_num
+    L_str = para.L_str
+    L_p_str = para.L_p_str
+    # L_s100 = para.L_s100
+    # L_p_s100 = para.L_p_s100
+    # L=scriptCreator.paraList("L",parameterlist["L"])
+    # L_num = L.num_list
+    # L_p_num = L.p_num_list
+    # L_str = L.str_list
+    # L_p_str = L.p_str_list
+    # L_s100 = L.s100_list
+    # L_p_s100 = L.p_s100_list   
+    
     print("L_num:",L_num)
     print("L_p_num:",L_p_num)
     print("L_str:",L_str)
     print("L_p_str:",L_p_str)
-    print("L_s100:",L_s100)
-    print("L_p_s100:",L_p_s100)
+    # print("L_s100:",L_s100)
+    # print("L_p_s100:",L_p_s100)
 
 
-    S=scriptCreator.Spara("Seed",parameterlist["seed"])
-    S_num = S.toS()
-    S_str = S.toStr()
-    s1 = parameterlist["seed"]["s1"]
-    s2 = parameterlist["seed"]["s2"]
+    # S=scriptCreator.Spara("Seed",parameterlist["seed"])
+    # S_num = S.toS
+    # S_str = S.toStr
+    # s1 = parameterlist["seed"]["s1"]
+    # s2 = parameterlist["seed"]["s2"]
 
-    J=scriptCreator.paraList("Jdis",parameterlist["J"])
-    J_num = J.num_list
-    J_p_num = J.p_num_list
-    J_str = J.str_list
-    J_p_str = J.p_str_list
-    J_s100 = J.s100_list
-    J_p_s100 = J.p_s100_list
-    
+    S_num = para.S_num
+    S_str = para.S_str
+    s1 = parameterlist["seed"]["S1"]
+    s2 = parameterlist["seed"]["S2"]
+    print("S_num:",S_num)
+    print("S_str:",S_str)
+
+    # J=scriptCreator.paraList1("Jdis",parameterlist["J"])
+    J_num = para.J_num
+    J_p_num = para.J_p_num
+    J_str = para.J_str
+    J_p_str = para.J_p_str
+    J_s100 = para.J_s100
+    J_p_s100 = para.J_p_s100
+
+    # J=scriptCreator.paraList("Jdis",p["J"])
+    # J_num = J.num_list
+    # J_p_num = J.p_num_list
+    # J_str = J.str_list
+    # J_p_str = J.p_str_list
+    # J_s100 = J.s100_list
+    # J_p_s100 = J.p_s100_list
+
+
     print("J_num",J_num)
     print("J_p_num",J_p_num)
     print("J_str:",J_str)
@@ -48,14 +72,22 @@ def submit(parameterlist, tSDRG_path):
     print("J_s100:",J_s100)
     print("J_p_s100:",J_p_s100)
     
-    D=scriptCreator.paraList("Dim",parameterlist["D"])
-    D_num = D.num_list
-    D_p_num = D.p_num_list
-    D_str = D.str_list
-    D_p_str = D.p_str_list
-    D_s100 = D.s100_list
-    D_p_s100 = D.p_s100_list
-    
+    # D=scriptCreator.paraList1("Dim",parameterlist["D"])
+    D_num = para.D_num
+    D_p_num = para.D_p_num
+    D_str = para.D_str
+    D_p_str = para.D_p_str
+    D_s100 = para.D_s100
+    D_p_s100 = para.D_p_s100
+
+    # D=scriptCreator.paraList("Dim",p["D"])
+    # D_num = D.num_list
+    # D_p_num = D.p_num_list
+    # D_str = D.str_list
+    # D_p_str = D.p_str_list
+    # D_s100 = D.s100_list
+    # D_p_s100 = D.p_s100_list
+
     print("D_num:",D_num)
     print("D_p_num:",D_p_num)
     print("D_str:",D_str)
@@ -65,7 +97,6 @@ def submit(parameterlist, tSDRG_path):
 
     Spin=parameterlist["Spin"]
     Pdis=parameterlist["Pdis"]
-    dx=parameterlist["dx"]
     bondDim=parameterlist["bondDim"]
     BC=parameterlist["BC"]
     check_Or_Not=parameterlist["check_Or_Not"]
@@ -77,8 +108,8 @@ def submit(parameterlist, tSDRG_path):
 
     tSDRG_fileName="/tSDRG_Spin=" + str(Spin) + ";BC=" + str(BC) + ";P="+ str(Pdis) + ";B=" + str(bondDim) \
         + ";L=" + str(L_p_num[0]) + "_" + str(L_p_num[1]) + "(" + str(L_p_num[2])\
-        + ");J=" + str(J_num[0]) + "_" + str(J_p_num[1]) +"(" + str(round(J_p_num[2],2)) \
-        + ");D=" + str(D_num[0]) + "_" + str(D_p_num[1]) + "(" + str(round(D_p_num[2],2)) +");"\
+        + ");J=" + str(J_p_num[0]) + "_" + str(J_p_num[1]) +"(" + str(J_p_num[2]) \
+        + ");D=" + str(D_p_num[0]) + "_" + str(D_p_num[1]) + "(" + str(D_p_num[2]) +");"\
         + "seed1=" + str(s1) + "_seed2=" + str(s2) + ";Partition=" + str(partition) + ";Number_of_core=" + str(Ncore)
 
     nt=datetime.datetime.now()
@@ -103,7 +134,7 @@ def submit(parameterlist, tSDRG_path):
 
     print("tSDRG_filePath : ",tSDRG_filePath)
     
-    os.system( "cd " + tSDRG_path + "/tSDRG/Main_" + Spin)
+    os.system( "cd " + tSDRG_path + "/tSDRG/Main_" + str(Spin))
     script_path_tot = "" 
     for l_i,l in enumerate(L_str):
         for j_i,j in enumerate(J_str):
@@ -126,8 +157,8 @@ def submit(parameterlist, tSDRG_path):
                         # print("not exist : ", output_path)
                         os.makedirs(output_path)
                         
-                    jobName = "Spin" + str(Spin) + "_" + l + "_" + j + "_" + d + "_" + "P" + str(Pdis) \
-                                + "_" + "BC=" + str(BC) + "_B" + str(bondDim) + "_Ncore=" + Ncore + "_seed1=" \
+                    jobName = "Spin" + str(Spin) + "_" + str(l) + "_" + j + "_" + d + "_" + "P" + str(Pdis) \
+                                + "_" + "BC=" + str(BC) + "_B" + str(bondDim) + "_Ncore=" + str(Ncore) + "_seed1=" \
                                     + str(s[0]) + "_seed2=" + str(s[-1])
                     script_name = jobName + "_" + now_date + "_" + now_time
                     script_path = script_path + "/" + script_name + "_random.sh"
@@ -137,7 +168,7 @@ def submit(parameterlist, tSDRG_path):
                     with open(script_path, "w") as file:
                         context[1] = context[1].replace("replace1", "scopion" + str(partition))
                         context[3] = context[3].replace("replace2", jobName)
-                        context[4] = context[4].replace("replace3", Ncore)
+                        context[4] = context[4].replace("replace3", str(Ncore))
                         context[5] = context[5].replace("replace4", output_path)
                         file.writelines(context)
                     
@@ -173,16 +204,18 @@ def find(parameterlist):
     for i in range(len(job_list)):
         job_list[i] = job_list[i].split()    
 
-
+    para = scriptCreator.paraList1(p["L"],p["J"],p["D"],p["seed"])
+    
     if (p["L"]["L1"] != "") and (p["L"]["L2"] != "") and (p["L"]["dL"] != ""): 
-        L=scriptCreator.paraList("L",p["L"])
-        L_num = L.num_list
-        L_p_num = L.p_num_list
-        L_str = L.str_list
-        L_p_str = L.p_str_list
-        L_s100 = L.s100_list
-        L_p_s100 = L.p_s100_list
-        
+        # L=scriptCreator.paraList("L",p["L"])
+        # L_num = L.num_list
+        # L_p_num = L.p_num_list
+        # L_str = L.str_list
+        # L_p_str = L.p_str_list
+        L_num = para.L_num
+        L_p_num = para.L_p_num
+        L_str = para.L_str
+        L_p_str = para.L_p_str       
         temp = []
         for l in L_str:
             for e in job_list:
@@ -192,14 +225,19 @@ def find(parameterlist):
 
             
     if (p["J"]["J1"] != "") and (p["J"]["J2"] != "") and (p["J"]["dJ"] != ""): 
-        J=scriptCreator.paraList("Jdis",p["J"])
-        J_num = J.num_list
-        J_p_num = J.p_num_list
-        J_str = J.str_list
-        J_p_str = J.p_str_list
-        J_s100 = J.s100_list
-        J_p_s100 = J.p_s100_list
-
+        # J=scriptCreator.paraList("Jdis",p["J"])
+        # J_num = J.num_list
+        # J_p_num = J.p_num_list
+        # J_str = J.str_list
+        # J_p_str = J.p_str_list
+        # J_s100 = J.s100_list
+        # J_p_s100 = J.p_s100_list
+        J_num = para.J_num
+        J_p_num = para.J_p_num
+        J_str = para.J_str
+        J_p_str = para.J_p_str
+        J_s100 = para.J_s100
+        J_p_s100 = para.J_p_s100
         temp = []
         for j in J_str:
             for e in job_list:
@@ -211,14 +249,19 @@ def find(parameterlist):
 
 
     if (p["D"]["D1"] != "") and (p["D"]["D2"] != "") and (p["D"]["dD"] != ""): 
-        D=scriptCreator.paraList("Dim",p["D"])
-        D_num = D.num_list
-        D_p_num = D.p_num_list
-        D_str = D.str_list
-        D_p_str = D.p_str_list
-        D_s100 = D.s100_list
-        D_p_s100 = D.p_s100_list
-
+        # D=scriptCreator.paraList("Dim",p["D"])
+        # D_num = D.num_list
+        # D_p_num = D.p_num_list
+        # D_str = D.str_list
+        # D_p_str = D.p_str_list
+        # D_s100 = D.s100_list
+        # D_p_s100 = D.p_s100_list
+        D_num = para.D_num
+        D_p_num = para.D_p_num
+        D_str = para.D_str
+        D_p_str = para.D_p_str
+        D_s100 = para.D_s100
+        D_p_s100 = para.D_p_s100
         temp = []
         for d in D_str:
             for e in job_list:
@@ -233,14 +276,17 @@ def find(parameterlist):
         #     job_list = job_list + list(filter(lambda n: i in n[2],job_list))
     # else:
     #     d = c
-            
-    s1 = p["seed"]["s1"]
-    s2 = p["seed"]["s2"]
+    # S_num = para.S_num
+    # S_str = para.S_str
+    # s1 = parameterlist["seed"]["S1"]
+    # s2 = parameterlist["seed"]["S2"]            
+    # s1 = p["seed"]["s1"]
+    # s2 = p["seed"]["s2"]
     Pdis=p["Pdis"]
-    dx=p["dx"]
+    # dx=p["dx"]
     bondDim=p["bondDim"]
     BC=p["BC"]
-    check_Or_Not=p["check_Or_Not"]
+    # check_Or_Not=p["check_Or_Not"]
     
         
     if (p["Spin"] != ""): 
@@ -299,18 +345,23 @@ def Distribution(parameterlist):
     print(tot-run)      
 
 
-task = sys.argv[1]
+# task = input("task\n")
 nt=datetime.datetime.now()
 
 print("---------------------------"+str(nt.now())+"---------------------------")
 
 
-parameterlist = {"Spin":None,"L":{"L1":None,"L2":None,"dL":None},"J":{"J1":None,"J2":None,"dJ":None},\
-                 "D":{"D1":None,"D2":None,"dD":None},"seed":{"s1":None,"s2":None,"ds":None},\
-                 "BC":None,"Pdis":None,"bondDim":None,"dx":None,"check_Or_Not":None,"status":None,"Ncore":None,"partition1":None,"partition2":None}
+# parameterlist = {"Spin":None,"L":{"L1":None,"L2":None,"dL":None},"J":{"J1":None,"J2":None,"dJ":None},\
+#                  "D":{"D1":None,"D2":None,"dD":None},"seed":{"s1":None,"s2":None,"ds":None},\
+#                  "BC":None,"Pdis":None,"bondDim":None,"dx":None,"check_Or_Not":None,"status":None,"Ncore":None,"partition1":None,"partition2":None}
 print("key in parameter in the following format : \n\
 ex : Spin, L1, L2, delta_L, J1, J2, delta_J, D1, D2, delta_D, Pdis, bondDim, initialSampleNumber, finalSampleNumber, sampleDelta, check_Or_Not\n\
 ex : 15(Spin) 64(L) 1.1(J) 0.1(D) 10(Pdis) 40(bondDim) 1(initialSampleNumber) 20(finalSampleNumber) 5(sampleDelta), Y(check_Or_Not)\n")
+
+task = sys.argv[1]
+
+a = scriptCreator.para(task)
+parameterlist = a.para
 
 i = 2
 for key1,value1 in parameterlist.items():
@@ -333,7 +384,14 @@ for key1,value1 in parameterlist.items():
             except IndexError:
                 parameterlist[key1][key2]=""
             i = i + 1
+if task == "change":
+    psubmit = a.submit
+    pcancel = a.cancel
 
+
+# a = scriptCreator.para(task)
+# parameterlist = a.para
+# print(parameterlist)
 
 print(parameterlist,"\n")
 for s in parameterlist:
@@ -346,11 +404,19 @@ if task == "submit" or task == "a":
     submit(parameterlist, tSDRG_path)
 elif task == "show" or task == "b":
     show(parameterlist)
+    Distribution(parameterlist)
 elif task == "cancel" or task == "c":
     cancel(parameterlist)
 elif task == "change" or task == "d":
-    cancel(parameterlist)
-    parameterlist["partition1"] = parameterlist["partition2"]
-    submit(parameterlist, tSDRG_path)
+    for key,value in parameterlist.items():
+        if key in psubmit and key != "partition1":
+            psubmit[key] = value
+        if key in pcancel and key != "partition1":
+            pcancel[key] = value
+    print(parameterlist)
+    pcancel["partition1"] = parameterlist["partition1"] 
+    psubmit["partition1"] = parameterlist["partition2"]
+    cancel(pcancel)
+    submit(psubmit, tSDRG_path)
 elif task == "dis" or task == "e":
     Distribution(parameterlist)
