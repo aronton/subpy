@@ -67,7 +67,6 @@ print(now.time())         # 14:25:46.962975
 for key,value in paraSub.items():
     print(key)
     print(value)
-    print("\n")
 
 file = "./subparameter/" + str(today.year) + "/" + str(today.month) + "/" + str(today.day) + "/" 
 if os.path.exists(file):
@@ -88,7 +87,6 @@ else:
         paraStr.append(str(key)+":"+str(value))
     paraStr="\n".join(paraStr)
     fh.write(paraStr)
-
 if task == "submit" or task == "change":
     command = "nohup python ./average.py " + task + " "
     s = command + s 
